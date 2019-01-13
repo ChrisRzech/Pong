@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "PongLib/PongLib.hpp"
 
-sf::Vector2f randDirection();
+sf::Vector2f randDirection(int maxGoodDeg, int minGoodDeg);
 
 int main()
 {
@@ -47,17 +47,19 @@ int main()
     const sf::Color ENTITY_COLOR = sf::Color::White;
     const sf::Vector2f PADDLE_SIZE(10, 50);
 
-    const sf::Vector2f P1_INITIAL_POS(SCREEN_SIZE.x / 6, SCREEN_SIZE.y / PADDLE_SIZE.y / 2);
-    const sf::Vector2f P2_INITIAL_POS(5 * SCREEN_SIZE.x / 6, SCREEN_SIZE.y / PADDLE_SIZE.y / 2);
+    const sf::Vector2f P1_INITIAL_POS(SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
+    const sf::Vector2f P2_INITIAL_POS(5 * SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
     const sf::Vector2f BALL_INITIAL_POS(static_cast<sf::Vector2f>(SCREEN_SIZE) / 2.f);
+    const int MAX_BALL_RAND_DEG = 45;
+    const int MIN_BALL_RAND_DEG = 15;
 
     Pong::Paddle p1(P1_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
     Pong::Paddle p2(P2_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
     Pong::Ball ball(BALL_INITIAL_POS, 7, ENTITY_COLOR, 3);
-    ball.setDirection(randDirection());
+    ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
 
     /* Game flags */
-    bool inputAllowed = true;
+    bool paused = false;
 
     /* Window loop */
     while(window.isOpen())
@@ -72,17 +74,17 @@ int main()
                 window.close();
                 break;
             case sf::Event::LostFocus:
-                inputAllowed = false;
+                paused = true;
                 break;
             case sf::Event::GainedFocus:
-                inputAllowed = true;
+                paused = false;
             default:
                 break;
             }
         }
 
         /* Updating events */
-        if(inputAllowed)
+        if(!paused)
         {
             /* Realtime input */
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -151,15 +153,15 @@ int main()
         {
             p2Score++;
             p2TextScore.setString(std::to_string(p2Score));
-            ball.setPosition(static_cast<sf::Vector2f>(SCREEN_SIZE) / 2.f);
-            ball.setDirection(randDirection());
+            ball.setPosition(BALL_INITIAL_POS);
+            ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
         }
         else if(ball.getPosition().x > SCREEN_SIZE.x)
         {
             p1Score++;
             p1TextScore.setString(std::to_string(p1Score));
-            ball.setPosition(static_cast<sf::Vector2f>(SCREEN_SIZE) / 2.f);
-            ball.setDirection(randDirection());
+            ball.setPosition(BALL_INITIAL_POS);
+            ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
         }
 
         /* Text updates */

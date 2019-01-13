@@ -7,31 +7,31 @@ namespace Pong
 class Ball
 {
 public:
-	/* Constructors */
-	Ball(const sf::Vector2f& position, float radius, const sf::Vector2f& direction, const sf::Color&, float speed);
+    /* Constructors */
+    Ball(const sf::Vector2f& pos, float radius, sf::Color, float speed);
 
-	/* Getters */
-	sf::FloatRect collisionBox() const;
-	sf::Vector2f position() const;
-	sf::Vector2f direction() const;
-	sf::Color color() const;
-	float radius() const;
-	float speed() const;
+    /* Getters */
+    sf::FloatRect getCollisionBox() const;
+    sf::Vector2f getPosition() const;
+    sf::Vector2f getDirection() const;
+    sf::Color getColor() const;
+    float getRadius() const;
+    float getSpeed() const;
 
-	/* Setters */
-	void setPosition(const sf::Vector2f&);
-	void setDirection(const sf::Vector2f&);
-	void setColor(const sf::Color&);
-	void setRadius(float);
-	void setSpeed(float);
+    /* Setters */
+    void setPosition(sf::Vector2f);
+    void setDirection(sf::Vector2f);
+    void setColor(sf::Color);
+    void setRadius(float);
+    void setSpeed(float);
 
-	/* Updaters */
-	void draw(sf::RenderWindow&) const;
-	void update();
+    /* Updaters */
+    void draw(sf::RenderWindow&) const;
+    void update();
 
 private:
-	sf::CircleShape m_circle;
-	sf::Vector2f m_direction;
-	float m_speed;
+    sf::CircleShape m_circle;
+    sf::Vector2f m_direction;
+    float m_speed;
 };
 }

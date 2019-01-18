@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "PongLib/PongLib.hpp"
 
-sf::Vector2f randDirection(int maxGoodDeg, int minGoodDeg);
+sf::Vector2f randDirection(int minDeg, int maxDeg);
 
 int main()
 {
@@ -50,13 +50,13 @@ int main()
     const sf::Vector2f P1_INITIAL_POS(SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
     const sf::Vector2f P2_INITIAL_POS(5 * SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
     const sf::Vector2f BALL_INITIAL_POS(static_cast<sf::Vector2f>(SCREEN_SIZE) / 2.f);
-    const int MAX_BALL_RAND_DEG = 45;
-    const int MIN_BALL_RAND_DEG = 15;
+    const int MAX_RAND_DEG = 45;
+    const int MIN_RAND_DEG = -45;
 
     Pong::Paddle p1(P1_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
     Pong::Paddle p2(P2_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
     Pong::Ball ball(BALL_INITIAL_POS, 7, ENTITY_COLOR, 3);
-    ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
+    ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
 
     /* Game flags */
     bool paused = false;
@@ -91,7 +91,7 @@ int main()
             {
                 p1.move(Pong::Paddle::Direction::UP);
 
-                //Move to valid position out-of-bounds
+                //Move to valid position if out-of-bounds
                 if(p1.getPosition().y < 0)
                     p1.setPosition(sf::Vector2f(p1.getPosition().x, 0));
             }
@@ -109,7 +109,7 @@ int main()
             {
                 p2.move(Pong::Paddle::Direction::UP);
 
-                //Move to valid position out-of-bounds
+                //Move to valid position if out-of-bounds
                 if(p2.getPosition().y < 0)
                     p2.setPosition(sf::Vector2f(p2.getPosition().x, 0));
             }
@@ -135,11 +135,11 @@ int main()
 
         if(ballCollisionBox.intersects(paddle1CollisionBox))
         {
-            ball.setDirection({currDirection.x * -1, currDirection.y});
+            ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
         }
         else if(ballCollisionBox.intersects(paddle2CollisionBox))
         {
-            ball.setDirection({currDirection.x * -1, currDirection.y});
+            ball.setDirection(randDirection(MIN_RAND_DEG + 180, MAX_RAND_DEG + 180));
         }
         else if(ball.getPosition().y < 0)
         {
@@ -154,14 +154,14 @@ int main()
             p2Score++;
             p2TextScore.setString(std::to_string(p2Score));
             ball.setPosition(BALL_INITIAL_POS);
-            ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
+            ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
         }
         else if(ball.getPosition().x > SCREEN_SIZE.x)
         {
             p1Score++;
             p1TextScore.setString(std::to_string(p1Score));
             ball.setPosition(BALL_INITIAL_POS);
-            ball.setDirection(randDirection(MAX_BALL_RAND_DEG, MIN_BALL_RAND_DEG));
+            ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
         }
 
         /* Text updates */

@@ -1,15 +1,15 @@
 #include <cstdlib>
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
-#include "PongLib/Ball/Ball.hpp"
 
-sf::Vector2f randDirection(int maxGoodDeg, int minGoodDeg)
+sf::Vector2f randDirection(int minDeg, int maxDeg)
 {
-    int randDeg = (rand() % (maxGoodDeg - minGoodDeg)) + minGoodDeg;
+    int randDeg = (rand() % (maxDeg - minDeg)) + minDeg;
     float x = std::cos(randDeg * static_cast<float>(M_PI) / 180);
     float y = std::sin(randDeg * static_cast<float>(M_PI) / 180);
-    bool xFlip = rand() % 2 == 0; //Asking if it's even so it makes sense
-    bool yFlip = rand() % 2 == 0;
 
-    return sf::Vector2f(xFlip ? -1 * x : x, yFlip ? -1 * y : y);
+    //Since y axis grows down, we must flip the y result
+    y *= -1;
+
+    return sf::Vector2f(x, y);
 }

@@ -1,6 +1,4 @@
 #include <string>
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "PongLib/PongLib.hpp"
@@ -9,8 +7,6 @@ sf::Vector2f randDirection(int minDeg, int maxDeg);
 
 int main()
 {
-    srand(time(nullptr));
-
     /* Window icon */
     sf::Image icon;
     if(!icon.loadFromFile("resources/icon.png"))
@@ -20,7 +16,7 @@ int main()
     }
 
     /* Window settings */
-    const sf::Vector2u SCREEN_SIZE(400, 400);
+    const sf::Vector2u SCREEN_SIZE(450, 300);
     sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Pong", sf::Style::Close);
     window.setFramerateLimit(60);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -50,12 +46,12 @@ int main()
     const sf::Vector2f P1_INITIAL_POS(SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
     const sf::Vector2f P2_INITIAL_POS(5 * SCREEN_SIZE.x / 6, SCREEN_SIZE.y / 2 - PADDLE_SIZE.y / 2);
     const sf::Vector2f BALL_INITIAL_POS(static_cast<sf::Vector2f>(SCREEN_SIZE) / 2.f);
-    const int MAX_RAND_DEG = 45;
     const int MIN_RAND_DEG = -45;
+    const int MAX_RAND_DEG = 45;
 
-    Pong::Paddle p1(P1_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
-    Pong::Paddle p2(P2_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 5);
-    Pong::Ball ball(BALL_INITIAL_POS, 7, ENTITY_COLOR, 3);
+    Pong::Paddle p1(P1_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 7);
+    Pong::Paddle p2(P2_INITIAL_POS, PADDLE_SIZE, ENTITY_COLOR, 7);
+    Pong::Ball ball(BALL_INITIAL_POS, 7, ENTITY_COLOR, 6);
     ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
 
     /* Game flags */
@@ -143,10 +139,14 @@ int main()
         }
         else if(ball.getPosition().y < 0)
         {
+            sf::Vector2f ballPos = ball.getPosition();
+            ball.setPosition(sf::Vector2f(ballPos.x, 0));
             ball.setDirection({currDirection.x, currDirection.y * -1});
         }
         else if(ball.getPosition().y + 2 * ball.getRadius() > SCREEN_SIZE.y)
         {
+            sf::Vector2f ballPos = ball.getPosition();
+            ball.setPosition(sf::Vector2f(ballPos.x, SCREEN_SIZE.y - 2 * ball.getRadius()));
             ball.setDirection({currDirection.x, currDirection.y * -1});
         }
         else if(ball.getPosition().x < 0)
@@ -161,7 +161,7 @@ int main()
             p1Score++;
             p1TextScore.setString(std::to_string(p1Score));
             ball.setPosition(BALL_INITIAL_POS);
-            ball.setDirection(randDirection(MIN_RAND_DEG, MAX_RAND_DEG));
+            ball.setDirection(randDirection(MIN_RAND_DEG + 180, MAX_RAND_DEG + 180));
         }
 
         /* Text updates */
